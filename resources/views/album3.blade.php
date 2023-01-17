@@ -1,4 +1,5 @@
 <?php
+
 ?>
 <html>
 <head></head>
@@ -11,13 +12,17 @@
 <div>
     <h1>Album 3</h1>
     <div style="border: 2px solid black; height: 70vh;width: 80vw;  margin: auto;">
-        <?php
-        foreach ($album as $image){
-            echo '<div style="padding: 20px; border: red; height: 200px; width: 200px; display: inline-block">
-                    <img src="' .$image->imageURL.'" alt="'.$image->promptUsed.'" height="100%" width="100%">
-                  </div>';
-        }
-        ?>
+        @foreach($album as $image)
+            <div style="padding: 20px; height: 300px; width: 200px; display: inline-block">
+                <img src="{{$image->imageURL}}" alt="{{$image->promptUsed}}" height="200px" width="200px"><br>
+                <span><b>Auteur:</b>{{$image->authorName}}1</span>
+                <span><b>Fotonaam:</b>{{$image->imageName}}</span><br>
+                <span><b>Prompt:</b>{{$image->promptUsed}}</span><br>
+                <span><b>Website:</b>{{$image->websiteUsed}}</span><br>
+                <span><b>Hoogte:</b>{{$image->fotoHeight}}</span>
+                <span><b>Breedte:</b>{{$image->fotoWidth}}</span><br>
+            </div>
+        @endforeach
     </div>
 </div>
 </body>

@@ -1,5 +1,4 @@
-<?php
-?>
+
 <h1>Foto uploaden</h1>
 <form enctype="multipart/form-data" method="post" action="{{route('fotoSubmit')}}">
     @csrf
@@ -7,6 +6,8 @@
     <input type="text" name="photoName"><br><br>
     <label>Gebruikte prompt</label>
     <input type="text" name="promptUsed"><br><br>
+    <label>Gebruikte website</label>
+    <input type="text" name="websiteUsed"><br><br>
     <label>Bestand</label>
     <input type="file" name="image"><br><br>
     <label>Album</label>

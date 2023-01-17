@@ -21,44 +21,48 @@ class UserController extends Controller
 
     public function customLogin(Request $request)
     {
-       $validate =  $request->validate([
-            'username'    => 'required',
-            'password' => 'required',
+        $validate = $request->validate([
+            'username' => 'required|max:25',
+            'password' => 'required|max:25',
         ]);
 
         $credentials = $request->only('username', 'password');
         if (Auth::attempt($credentials)) {
             return redirect()->intended('index');
         }
-
         return back()->withErrors('De opgegeven username/password combinatie klopt niet.');
     }
 
-    public function logOut(Request  $request){
+    public function logOut(Request $request)
+    {
         Auth::logout();
+
         return redirect('/');
     }
 
-
-    public function showRegister(){
+    public function showRegister()
+    {
         return view("register");
     }
 
-    public function registerUser(Request $request){
-
-        $validate =  $request->validate([
-            'username'    => 'required',
-            'password' => 'required',
-            'authorname' => 'required'
+    public function registerUser(Request $request)
+    {
+        $validate = $request->validate([
+            'username'   => 'required',
+            'password'   => 'required',
+            'authorname' => 'required',
         ]);
 
-        $user = new UserModel();
-        $user->username = $validate['username'];
-        $user->password = Hash::make($validate['password']);
-        $user->authorname = $validate['authorname'];
-        $user->save();
+        $data = [
+            'username'   => $validate['username'],
+            'password'   => Hash::make($validate['password']),
+            'authorname' => $validate['authorname'],
+        ];
 
-        return redirect()->intended('login');
+        $registerUser = UserModel::registerUser($data);
+        if ($registerUser) {
+            return redirect()->intended('login');
+        }
+        return back()->with('status', "Registreren error");
     }
-
 }

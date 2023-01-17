@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('albumID')->references('albumID')->on('album');
             $table->foreignId('userID')->references('userID')->on('user');
             $table->ipAddress('promptUsed'); // ipAdress is hetzelfde als Varchar
+            $table->ipAddress('websiteUsed'); // ipAdress is hetzelfde als Varchar
             $table->string('imageName');
             $table->ipAddress('imageURL'); // ipAdress is hetzelfde als Varchar
             $table->integer('fotoHeight');

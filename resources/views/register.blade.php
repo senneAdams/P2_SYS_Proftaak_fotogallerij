@@ -12,6 +12,11 @@
     <input type="password" name="password"><br><br>
     <br><br>
     <input type="submit" name="submit">
+    @if(session('status'))
+        <div class="alert alert-success" role="alert">
+            {{ session('status') }}
+        </div>
+    @endif
 </form>
 </body>
 </html>

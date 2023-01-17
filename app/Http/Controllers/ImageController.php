@@ -14,42 +14,47 @@ class ImageController extends Controller
 {
     public function show()
     {
-        $album = DB::table('album')->get();
-
-        return view("uploadFoto")->with('album', $album);
+        if (Auth::user()){
+            $album = DB::table('album')->get();
+            return view("uploadFoto")->with('album', $album);
+        } else {
+         return back();
+        }
     }
 
     public function handlePhotoUpload(Request $request)
     {
-
         $validated = $request->validate([
-            'photoName'  => 'required|min:3|max:32',
-            'promptUsed' => 'required|min:3|max:32',
-            'image'      => 'required',
-            'uploadTo'   => 'required',
+            'photoName'   => 'required|min:3|max:32',
+            'promptUsed'  => 'required|min:3|max:32',
+            'image'       => 'required|image',
+            'uploadTo'    => 'required',
+            'websiteUsed' => 'required',
         ]);
 
-
-        // foto
-
         $path     = 'Album' . $validated['uploadTo'];
-        $fileName = 'Album' . $validated['uploadTo'] . 'd' . date('dmy') . '.' . $request->file('image')->extension();
+        $fileName = $validated['photoName'] . 'a' . $validated['uploadTo'] . 'd' . date('dmy') . '.' . $request->file('image')->extension();
 
-        $request->image->move($path, $fileName);
+        $request->image->move($path, $fileName); // image verplaatsen
 
+        list($width, $height) = getimagesize($path . '/' . $fileName);
 
-        list($width,$height) = getimagesize($path . '/' .$fileName);
+        $data = [
+            'albumID'     => $validated['uploadTo'],
+            'userID'      => Auth::id(),
+            'promptUsed'  => $validated['promptUsed'],
+            'websiteUsed' => $validated['websiteUsed'],
+            'imageName'   => $validated['photoName'],
+            'imageURL'    => $path . '/' . $fileName,
+            'fotoHeight'  => $height,
+            'fotoWidth'   => $width,
+        ];
 
-        $image          = new ImageModel();
-        $image->albumID = $validated['uploadTo'];
-        $image->userID = Auth::id();
-        $image->promptUsed = $validated['promptUsed'];
-        $image->imageName  = $validated['photoName'];
-        $image->imageURL   = $path . '/' . $fileName;
-        $image->fotoHeight = $height;
-        $image->fotoWidth =  $width;
-
-        $image->save();
-        return back()->with('status',"Foto uploaden success");
+        $saveImage = ImageModel::saveImage($data);
+        if ($saveImage) {
+            return back()->with('status', "Foto uploaden success");
+        } else {
+            return back()->with('status', "Foto uploaden error");
+        }
     }
 }
